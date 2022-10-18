@@ -15,21 +15,19 @@ class Lecture(models.Model):
     title = models.CharField(max_length=256, blank=False)
     file = models.FileField()
     homework = models.OneToOneField(Homework, on_delete=models.CASCADE, null=True)
-
-    def __search_course(self):
-        return Course.objects.filter(lectures__pk=self.pk).first()
+    course = models.ForeignKey(Course, on_delete=models.CASCADE)
 
     @property
     def owner(self):
-        return self.__search_course().owner
+        return self.course.owner
 
     @property
     def teachers(self):
-        return self.__search_course().teachers
+        return self.course.teachers
 
     @property
     def students_of_course(self):
-        return self.__search_course().students_of_course
+        return self.course.students_of_course
 
 
 class HomeworkStudent(models.Model):
