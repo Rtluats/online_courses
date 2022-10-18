@@ -12,12 +12,12 @@ from course_app.serializer import CourseSerializer
 class CourseList(APIView):
     permission_classes = (IsAuthenticated, IsOwnerOrReadOnlyForStudents)
 
-    def get(self, request, format=None):
+    def get(self, request):
         courses = Course.objects.all()
         serializer = CourseSerializer(courses, many=True)
         return Response(serializer.data)
 
-    def post(self, request, format=None):
+    def post(self, request):
         serializer = CourseSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -31,12 +31,12 @@ class CourseDetail(APIView):
     def get_object(self, pk):
         return get_object_or_404(Course, pk=pk)
 
-    def get(self, request, pk, format=None):
+    def get(self, request, pk):
         course = self.get_object(pk)
         serializer = CourseSerializer(course)
         return Response(serializer.data)
 
-    def put(self, request, pk, format=None):
+    def put(self, request, pk):
         course = self.get_object(pk)
         serializer = CourseSerializer(course, data=request.data)
         if serializer.is_valid():
@@ -44,7 +44,11 @@ class CourseDetail(APIView):
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    def delete(self, request, pk, format=None):
+    def delete(self, request, pk):
         course = self.get_object(pk)
         course.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class AddRemoveStudentsToCourse(APIView):
+    permissions = (IsAuthenticated, IsOwnerOrReadOnlyForStudents)

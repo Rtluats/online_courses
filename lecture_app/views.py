@@ -12,12 +12,12 @@ from lecture_app.serializer import LectureSerializer, HomeworkStudentSerializer
 class LectureList(APIView):
     permission_classes = (IsAuthenticated, IsOwnerOrReadOnlyForStudents)
 
-    def get(self, request, format=None):
+    def get(self, request):
         lectures = Lecture.objects.all()
         serializer = LectureSerializer(lectures, many=True)
         return Response(serializer.data)
 
-    def post(self, request, format=None):
+    def post(self, request):
         serializer = LectureSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -26,17 +26,18 @@ class LectureList(APIView):
 
 
 class LectureDetail(APIView):
+    # FileUploadParser https://www.django-rest-framework.org/api-guide/parsers/#fileuploadparser ??
     permission_classes = (IsAuthenticated, IsOwnerOrReadOnlyForStudents)
 
     def get_object(self, pk):
         return get_object_or_404(Lecture, pk=pk)
 
-    def get(self, request, pk, format=None):
+    def get(self, request, pk):
         lecture = self.get_object(pk)
         serializer = LectureSerializer(lecture)
         return Response(serializer.data)
 
-    def put(self, request, pk, format=None):
+    def put(self, request, pk):
         lecture = self.get_object(pk)
         serializer = LectureSerializer(lecture, data=request.data)
         if serializer.is_valid():
@@ -44,7 +45,7 @@ class LectureDetail(APIView):
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    def delete(self, request, pk, format=None):
+    def delete(self, request, pk):
         lecture = self.get_object(pk)
         lecture.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
@@ -53,12 +54,12 @@ class LectureDetail(APIView):
 class HomeworkStudentList(APIView):
     permission_classes = (IsAuthenticated,)
 
-    def get(self, request, format=None):
+    def get(self, request):
         homeworks = HomeworkStudent.objects.all()
         serializer = HomeworkStudentSerializer(homeworks, many=True)
         return Response(serializer.data)
 
-    def post(self, request, format=None):
+    def post(self, request):
         serializer = HomeworkStudentSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -72,12 +73,12 @@ class HomeworkStudentDetail(APIView):
     def get_object(self, pk):
         return get_object_or_404(HomeworkStudent, pk=pk)
 
-    def get(self, request, pk, format=None):
+    def get(self, request, pk):
         homework_student = self.get_object(pk)
         serializer = HomeworkStudentSerializer(homework_student)
         return Response(serializer.data)
 
-    def put(self, request, pk, format=None):
+    def put(self, request, pk):
         homework_student = self.get_object(pk)
         serializer = HomeworkStudentSerializer(homework_student, data=request.data)
         if serializer.is_valid():
@@ -85,7 +86,7 @@ class HomeworkStudentDetail(APIView):
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    def delete(self, request, pk, format=None):
-        lecture = self.get_object(pk)
-        lecture.delete()
+    def delete(self, request, pk):
+        homework_student = self.get_object(pk)
+        homework_student.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)

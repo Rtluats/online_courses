@@ -17,6 +17,8 @@ class LectureSerializer(serializers.ModelSerializer):
         fields = ('id', 'title', 'file', 'homework')
 
 
+
+
 class HomeworkStudentSerializer(serializers.ModelSerializer):
     homework = HomeworkSerializer()
 

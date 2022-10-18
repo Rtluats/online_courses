@@ -15,7 +15,31 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from rest_framework import permissions
+from drf_yasg.views import get_schema_view
+from drf_yasg import openapi
+from course_app.views import CourseList, CourseDetail
+from lecture_app.views import LectureList, HomeworkStudentList, LectureDetail, HomeworkStudentDetail
+
+schema_view = get_schema_view(
+    openapi.Info(
+        title="Online Courses API",
+        default_version='v1',
+        description="Test description",
+        terms_of_service="https://www.google.com/policies/terms/",
+        contact=openapi.Contact(email="rtluats@gmail.com"),
+        license=openapi.License(name="BSD License"),
+    ),
+    public=True,
+    permission_classes=[permissions.AllowAny],
+)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('courses/', CourseList.as_view()),
+    path('courses/<int:pk>', CourseDetail.as_view()),
+    path('lectures/', LectureList.as_view()),
+    path('lectures/<int:pk>', LectureDetail.as_view()),
+    path('homework_students/', HomeworkStudentList.as_view()),
+    path('homework_students/<int:pk>', HomeworkStudentDetail.as_view())
 ]
