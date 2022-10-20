@@ -1,13 +1,21 @@
-from django.contrib.auth.models import User
 from django.db import models
+from django.db.models import Q
 
-# Create your models here.
+from user_app.models import User
+
+
+class Manager(models.Manager):
+    def get_queryset(self, user_id):
+        return super().get_queryset().filter(Q(main_teacher__pk=user_id) |
+                                             Q(addition_teachers__pk=user_id) |
+                                             Q(students__pk=user_id)).distinct()
 
 
 class Course(models.Model):
     main_teacher = models.ForeignKey(User, on_delete=models.CASCADE)
     addition_teachers = models.ManyToManyField(User)
     students = models.ManyToManyField(User)
+    course_by_user = Manager()
 
     @property
     def owner(self):

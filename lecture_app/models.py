@@ -1,10 +1,7 @@
 from django.db import models
-from django.contrib.auth.models import User
 
-from course_app.models import Course
-
-
-# Create your models here.
+from user_app.models import User
+from course_app.models import Course, Manager
 
 
 class Homework(models.Model):
@@ -16,6 +13,7 @@ class Lecture(models.Model):
     file = models.FileField()
     homework = models.OneToOneField(Homework, on_delete=models.CASCADE, null=True)
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    lecture_by_user = Manager()
 
     @property
     def owner(self):
@@ -40,7 +38,7 @@ class HomeworkStudent(models.Model):
 
 class Comment(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    homework_student = models.ForeignKey(HomeworkStudent, on_delete=models.CASCADE)
+    homework_student = models.ForeignKey(HomeworkStudent, on_delete=models.CASCADE, related_name='comments')
     message = models.TextField()
     datetime_field = models.DateTimeField(auto_now_add=True)
 

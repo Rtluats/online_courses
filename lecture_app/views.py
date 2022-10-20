@@ -1,9 +1,11 @@
+from django.shortcuts import get_object_or_404
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
-from permissions import IsOwnerOrReadOnlyForStudents
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from django.shortcuts import get_object_or_404
+from rest_framework.parsers import FileUploadParser
+
+from permissions import IsOwnerOrReadOnlyForStudents
 
 from lecture_app.models import Lecture, HomeworkStudent
 from lecture_app.serializer import LectureSerializer, HomeworkStudentSerializer
@@ -11,9 +13,10 @@ from lecture_app.serializer import LectureSerializer, HomeworkStudentSerializer
 
 class LectureList(APIView):
     permission_classes = (IsAuthenticated, IsOwnerOrReadOnlyForStudents)
+    parser_classes = (FileUploadParser,)
 
     def get(self, request):
-        lectures = Lecture.objects.all()
+        lectures = Lecture.lecture_by_user.get_queryset(request.user.id).all()
         serializer = LectureSerializer(lectures, many=True)
         return Response(serializer.data)
 
@@ -26,8 +29,8 @@ class LectureList(APIView):
 
 
 class LectureDetail(APIView):
-    # FileUploadParser https://www.django-rest-framework.org/api-guide/parsers/#fileuploadparser ??
     permission_classes = (IsAuthenticated, IsOwnerOrReadOnlyForStudents)
+    parser_classes = (FileUploadParser,)
 
     def get_object(self, pk):
         return get_object_or_404(Lecture, pk=pk)
@@ -54,8 +57,11 @@ class LectureDetail(APIView):
 class HomeworkStudentList(APIView):
     permission_classes = (IsAuthenticated,)
 
-    def get(self, request):
-        homeworks = HomeworkStudent.objects.all()
+    def get(self, request, is_done=None):
+        if is_done is None:
+            homeworks = HomeworkStudent.objects.all()
+        else:
+            homeworks = HomeworkStudent.objects.filter(is_done=is_done).all()
         serializer = HomeworkStudentSerializer(homeworks, many=True)
         return Response(serializer.data)
 

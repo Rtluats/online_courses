@@ -1,3 +1,4 @@
+from django.db.models import Q
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from permissions import IsOwnerOrReadOnlyForStudents
@@ -13,7 +14,7 @@ class CourseList(APIView):
     permission_classes = (IsAuthenticated, IsOwnerOrReadOnlyForStudents)
 
     def get(self, request):
-        courses = Course.objects.all()
+        courses = Course.course_by_user.get_queryset(request.user.id).all()
         serializer = CourseSerializer(courses, many=True)
         return Response(serializer.data)
 
@@ -26,7 +27,7 @@ class CourseList(APIView):
 
 
 class CourseDetail(APIView):
-    permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticated, IsOwnerOrReadOnlyForStudents)
 
     def get_object(self, pk):
         return get_object_or_404(Course, pk=pk)
@@ -48,7 +49,3 @@ class CourseDetail(APIView):
         course = self.get_object(pk)
         course.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
-
-
-class AddRemoveStudentsToCourse(APIView):
-    permissions = (IsAuthenticated, IsOwnerOrReadOnlyForStudents)
