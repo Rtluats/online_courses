@@ -12,3 +12,8 @@ class IsOwnerOrReadOnlyForStudents(permissions.BasePermission):
 class IsOwner(permissions.BasePermission):
     def has_object_permission(self, request, view, obj):
         return request.user == obj.owner
+
+
+class IsOwnerOfHomeworkStudent(permissions.BasePermission):
+    def has_object_permission(self, request, view, obj):
+        return request.user == obj.owner or request.user in obj.teachers or request.user in obj.students_of_course

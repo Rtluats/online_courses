@@ -2,7 +2,6 @@ from rest_framework import serializers
 
 from course_app.models import Course
 from user_app.serializer import UserSerializer
-from lecture_app.serializer import LectureSerializer
 
 
 class CourseSerializer(serializers.ModelSerializer):

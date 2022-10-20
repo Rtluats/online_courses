@@ -11,7 +11,7 @@ class Homework(models.Model):
 class Lecture(models.Model):
     title = models.CharField(max_length=256, blank=False)
     file = models.FileField()
-    homework = models.OneToOneField(Homework, on_delete=models.CASCADE, null=True)
+    homework = models.OneToOneField(Homework, on_delete=models.CASCADE, null=True, related_name="lecture")
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
     lecture_by_user = Manager()
 
@@ -31,9 +31,25 @@ class Lecture(models.Model):
 class HomeworkStudent(models.Model):
     homework = models.ForeignKey(Homework, on_delete=models.CASCADE)
     is_done = models.BooleanField(default=False)
-    text = models.TextField(blank=False)
+    text = models.TextField(blank=True, default='')
     student = models.ForeignKey(User, on_delete=models.CASCADE)
-    mark = models.IntegerField()
+    mark = models.IntegerField(default=0)
+
+    @property
+    def get_lecture(self):
+        return self.homework.lecture
+
+    @property
+    def owner(self):
+        return self.get_lecture.owner
+
+    @property
+    def teachers(self):
+        return self.get_lecture.teachers
+
+    @property
+    def students(self):
+        return [self.student]
 
 
 class Comment(models.Model):
@@ -43,4 +59,4 @@ class Comment(models.Model):
     datetime_field = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        ordering = ('datetime_field',)
+        ordering = ('-datetime_field',)

@@ -28,6 +28,7 @@ class CommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
         fields = ('id', 'user', 'homework_student', 'message', 'datetime_field')
+        read_only_fields = ('datetime_field',)
         depth = 1
 
 
@@ -39,5 +40,4 @@ class HomeworkStudentSerializer(serializers.ModelSerializer):
     class Meta:
         model = HomeworkStudent
         fields = ('id', 'homework', 'text', 'student', 'mark', 'comments')
-        # read_only_fields = ('comments',)
         depth = 1
