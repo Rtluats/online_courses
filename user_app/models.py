@@ -6,3 +6,6 @@ from django.contrib.auth.models import AbstractUser
 class User(AbstractUser):
     roles = models.JSONField(default=list, null=False)
 
+    @property
+    def owner(self):
+        return self

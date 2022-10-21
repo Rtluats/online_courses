@@ -12,9 +12,9 @@ class Manager(models.Manager):
 
 
 class Course(models.Model):
-    main_teacher = models.ForeignKey(User, on_delete=models.CASCADE)
-    addition_teachers = models.ManyToManyField(User)
-    students = models.ManyToManyField(User)
+    main_teacher = models.ForeignKey(User, on_delete=models.CASCADE, related_name="course_main_teacher")
+    addition_teachers = models.ManyToManyField(User, related_name="course_addition_teachers")
+    students = models.ManyToManyField(User, related_name="course_students")
     course_by_user = Manager()
 
     @property

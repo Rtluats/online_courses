@@ -22,7 +22,7 @@ class LectureSerializer(serializers.ModelSerializer):
 
 
 class CommentSerializer(serializers.ModelSerializer):
-    homework_student = serializers.PrimaryKeyRelatedField()
+    homework_student = serializers.PrimaryKeyRelatedField(read_only=True)
     user = UserSerializer()
 
     class Meta:
