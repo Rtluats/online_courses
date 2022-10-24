@@ -75,6 +75,7 @@ class HomeworkStudentList(APIView):
         if is_done is None:
             homeworks = HomeworkStudent.objects.all()
         else:
+            is_done = bool(is_done)
             homeworks = HomeworkStudent.objects.filter(is_done=is_done).all()
         serializer = HomeworkStudentSerializer(homeworks, many=True)
         return Response(serializer.data)
