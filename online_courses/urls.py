@@ -45,6 +45,6 @@ urlpatterns = [
     path('courses/<int:pk>', CourseDetail.as_view()),
     path('lectures/', LectureList.as_view()),
     path('lectures/<int:pk>', LectureDetail.as_view()),
-    path('homework_students/', HomeworkStudentList.as_view()),
+    path('homework_students/<bolean:is_done>', HomeworkStudentList.as_view()),
     path('homework_students/<int:pk>', HomeworkStudentDetail.as_view())
 ]
